@@ -4,5 +4,4 @@
 
 ## 预览
 
-<img width="1898" alt="neovim screen short" src="https://github.com/luobingme/.nvim/assets/62934849/123de64a-c008-48ee-851d-3deed7e6ee88">
-
+<img width="1858" alt="image" src="https://github.com/luobingme/.nvim/assets/62934849/d0308420-2923-4b48-bf1c-6aa33c008de5">
