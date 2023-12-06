@@ -145,15 +145,22 @@ require('lazy').setup({
     },
   },
 
+  -- {
+  --   -- Theme inspired by Atom
+  --   'navarasu/onedark.nvim',
+  --   priority = 1000,
+  --   config = function()
+  --     -- vim.cmd.colorscheme 'onedark'
+  --   end,
+  -- },
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    'AlexvZyl/nordic.nvim',
+    lazy = false,
     priority = 1000,
     config = function()
-      -- vim.cmd.colorscheme 'onedark'
-    end,
+      require 'nordic'.load()
+    end
   },
-
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -161,7 +168,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        -- theme = 'onedark',
+        theme = 'nordic',
         component_separators = '|',
         section_separators = '',
       },
@@ -177,7 +184,7 @@ require('lazy').setup({
       require("ibl").setup {
         indent = { char = "▏" },
         whitespace = {
-          remove_blankline_trail = true,
+          remove_blankline_trail = false,
         },
         scope = { enabled = true },
       }
