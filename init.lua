@@ -173,6 +173,15 @@ require('lazy').setup({
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help ibl`
+    config = function()
+      require("ibl").setup {
+        indent = { char = "▏" },
+        whitespace = {
+          remove_blankline_trail = true,
+        },
+        scope = { enabled = true },
+      }
+    end,
     main = 'ibl',
     opts = {},
   },
