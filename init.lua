@@ -266,6 +266,9 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+-- Use relativenumber
+vim.o.relativenumber = true
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -444,7 +447,7 @@ end, 0)
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
-local on_attach = function(_, bufnr)
+local on_attach = function(_, bufnr, auto_enable_formatting)
   -- NOTE: Remember that lua is a real programming language, and as such it is possible
   -- to define small helper and utility functions so you don't have to repeat yourself
   -- many times.
@@ -473,6 +476,10 @@ local on_attach = function(_, bufnr)
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
+  -- diagnostic
+  nmap("]g", vim.diagnostic.goto_next, "Next Diagnostic")
+  nmap("]p", vim.diagnostic.goto_prev, "Previous Diagnostic")
+
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
@@ -485,6 +492,22 @@ local on_attach = function(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
+
+  -- auto format command
+  if auto_enable_formatting then
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = vim.api.nvim_create_augroup("FormatOnSave", { clear = true }),
+      buffer = bufnr,
+      callback = function()
+        vim.lsp.buf.format()
+      end,
+    })
+  end
+end
+
+-- autoformat on_attach
+local auto_on_attach = function(_, bufnr)
+  on_attach(_, bufnr, true)
 end
 
 -- document existing key chains
@@ -518,12 +541,14 @@ require('mason-lspconfig').setup()
 --
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
+
+
 local servers = {
   -- clangd = {},
   -- gopls = {},
   -- pyright = {},
   rust_analyzer = {
-    settings = {
+    settings               = {
       ['rust-analyzer'] = {
         checkOnSave = {
           command = "clippy",
@@ -540,9 +565,10 @@ local servers = {
         },
       },
     },
+    auto_enable_formatting = true
   },
   -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+  html = { filetypes = { 'html', 'twig', 'hbs' } },
 
   lua_ls = {
     Lua = {
@@ -564,17 +590,22 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
 
+local default_server_config = {
+  auto_enable_formatting = false,
+}
+
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
 }
 
 mason_lspconfig.setup_handlers {
   function(server_name)
+    local server_config = servers[server_name] or default_server_config
     require('lspconfig')[server_name].setup {
       capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
+      on_attach = server_config.auto_enable_formatting and auto_on_attach or on_attach,
+      settings = server_config,
+      filetypes = (server_config).filetypes,
     }
   end,
 }
@@ -613,12 +644,12 @@ cmp.setup {
       select = true,
     },
     ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
+      if cmp.visible() and has_words_before() then
+        cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+      elseif cmp.visible() then
         cmp.select_next_item()
       elseif luasnip.expand_or_locally_jumpable() then
         luasnip.expand_or_jump()
-      elseif cmp.visible() and has_words_before() then
-        cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
       else
         fallback()
       end
@@ -634,9 +665,26 @@ cmp.setup {
     end, { 'i', 's' }),
   },
   sources = {
-    { name = "copilot", group_index = 2 },
+    { name = "copilot" },
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+  },
+  sorting = {
+    priority_weight = 2,
+    comparators = {
+      require("copilot_cmp.comparators").prioritize,
+      -- Below is the default comparitor list and order for nvim-cmp
+      cmp.config.compare.offset,
+      -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+      cmp.config.compare.exact,
+      cmp.config.compare.score,
+      cmp.config.compare.recently_used,
+      cmp.config.compare.locality,
+      cmp.config.compare.kind,
+      cmp.config.compare.sort_text,
+      cmp.config.compare.length,
+      cmp.config.compare.order,
+    },
   },
 }
 
