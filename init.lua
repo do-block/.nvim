@@ -145,21 +145,13 @@ require('lazy').setup({
     },
   },
 
-  -- {
-  --   -- Theme inspired by Atom
-  --   'navarasu/onedark.nvim',
-  --   priority = 1000,
-  --   config = function()
-  --     -- vim.cmd.colorscheme 'onedark'
-  --   end,
-  -- },
   {
-    'AlexvZyl/nordic.nvim',
-    lazy = false,
+    "nyoom-engineering/oxocarbon.nvim",
     priority = 1000,
     config = function()
-      require 'nordic'.load()
-    end
+      vim.opt.background = "dark"
+      vim.cmd.colorscheme 'oxocarbon'
+    end,
   },
   {
     -- Set lualine as statusline
@@ -168,7 +160,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'nordic',
+        theme = 'oxocarbon',
         component_separators = '|',
         section_separators = '',
       },
@@ -494,7 +486,7 @@ local on_attach = function(_, bufnr, auto_enable_formatting)
 
   -- diagnostic
   nmap("]g", vim.diagnostic.goto_next, "Next Diagnostic")
-  nmap("]p", vim.diagnostic.goto_prev, "Previous Diagnostic")
+  nmap("[g", vim.diagnostic.goto_prev, "Previous Diagnostic")
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
