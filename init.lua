@@ -144,13 +144,20 @@ require('lazy').setup({
       end,
     },
   },
-
+  -- {
+  --   "nyoom-engineering/oxocarbon.nvim",
+  --   priority = 1000,
+  --   config = function()
+  --     vim.opt.background = "dark"
+  --     vim.cmd.colorscheme 'oxocarbon'
+  --   end,
+  -- },
   {
-    "nyoom-engineering/oxocarbon.nvim",
+    "ellisonleao/gruvbox.nvim",
     priority = 1000,
     config = function()
-      vim.opt.background = "dark"
-      vim.cmd.colorscheme 'oxocarbon'
+      vim.o.background = "dark"
+      vim.cmd.colorscheme 'gruvbox'
     end,
   },
   {
@@ -160,7 +167,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'oxocarbon',
+        theme = 'gruvbox',
         component_separators = '|',
         section_separators = '',
       },
@@ -253,6 +260,9 @@ vim.o.clipboard = 'unnamedplus'
 
 -- Enable break indent
 vim.o.breakindent = true
+
+-- exrc
+vim.opt.exrc = true
 
 -- Save undo history
 vim.o.undofile = true
