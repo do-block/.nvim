@@ -1,7 +1,19 @@
 local function getFoldEndChar(line)
-    local char = line:match("([%{%(%[%<])%s*$")
+    -- 检查是否以开始标签结束
+    local tagName = line:match("<(%w+)[^>]*>$")
+    if tagName then
+        -- 检查是否自闭合标签
+        if line:match("/%s*>$") then
+            return '' -- 自闭合标签没有闭合后缀
+        else
+            return ('</%s>'):format(tagName) -- 返回对应的闭合标签
+        end
+    end
+
+    -- 对于非 HTML 标签，保持原有逻辑
     local endChars = { ['{'] = '}', ['('] = ')', ['['] = ']', ['<'] = '>' }
-    return endChars[char]
+    local char = line:match("([%{%(%[%<])%s*$")
+    return endChars[char] or ''
 end
 
 local handler = function(virtText, lnum, endLnum, width, truncate)
