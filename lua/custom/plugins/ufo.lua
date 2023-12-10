@@ -19,15 +19,6 @@ local function get_pair_string(lnum)
             pair_string = '</' .. tag_name .. '>'
         end
     else
-        -- local lastChar = line:match("([%{%(%[%<])%s*$")
-        -- if lastChar then
-        --     local endChars = { ['{'] = '}', ['('] = ')', ['['] = ']', ['<'] = '>' }
-        --     pair_string = endChars[lastChar] or '...'
-        --     -- 额外检查是否符合 ({ 模式
-        --     if trimmed_line:match('%(%s*{$') then
-        --         pair_string = ')}'
-        --     end
-        -- end
         -- 检查行结尾是否符合特定模式
         local lastChar = trimmed_line:match("([%{%(%[%<])%s*$")
         if lastChar then
