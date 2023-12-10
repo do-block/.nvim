@@ -4,4 +4,8 @@
 
 ## 预览
 
-<img width="830" alt="image" src="https://github.com/luobingme/.nvim/assets/62934849/85d0fc96-17b7-49cc-9d13-7b1911e5cefd">
+<img width="820" alt="image" src="https://github.com/daiw-ing/.nvim/assets/62934849/88b7c0aa-570e-48b7-80e0-2e1a38b600b5">
+
+---------
+
+<img width="820" alt="image" src="https://github.com/daiw-ing/.nvim/assets/62934849/556874d7-a5f5-49ac-bd62-849c1f9679ea">
