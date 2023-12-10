@@ -11,6 +11,7 @@ local function get_pair_string(lnum)
     local pair_string = 'default'
     local line = vim.fn.getline(lnum)
     local is_tag_value = is_tag(tostring(line))
+    local trimmed_line = line:match('^%s*(.-)%s*$') -- 去除行首行尾的空白字符
 
     if is_tag_value then
         local tag_name = line:match('<(%w+)')
@@ -18,10 +19,24 @@ local function get_pair_string(lnum)
             pair_string = '</' .. tag_name .. '>'
         end
     else
-        local lastChar = line:match("([%{%(%[%<])%s*$")
+        -- local lastChar = line:match("([%{%(%[%<])%s*$")
+        -- if lastChar then
+        --     local endChars = { ['{'] = '}', ['('] = ')', ['['] = ']', ['<'] = '>' }
+        --     pair_string = endChars[lastChar] or '...'
+        --     -- 额外检查是否符合 ({ 模式
+        --     if trimmed_line:match('%(%s*{$') then
+        --         pair_string = ')}'
+        --     end
+        -- end
+        -- 检查行结尾是否符合特定模式
+        local lastChar = trimmed_line:match("([%{%(%[%<])%s*$")
         if lastChar then
             local endChars = { ['{'] = '}', ['('] = ')', ['['] = ']', ['<'] = '>' }
-            return endChars[lastChar] or '...'
+            pair_string = endChars[lastChar] or '...'
+            -- 额外检查是否符合 ({ 模式
+            if trimmed_line:match('%(%s*{$') then
+                pair_string = ')}'
+            end
         end
     end
 
